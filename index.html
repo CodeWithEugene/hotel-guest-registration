@@ -29,7 +29,8 @@
             transform: scale(0.98);
         }
         .excel-cell {
-            min-width: 120px;
+            min-width: 100px;
+            max-width: 200px;
             height: 40px;
             padding: 8px;
             border: 1px solid #4b5563;
@@ -37,6 +38,9 @@
             outline: none;
             background-color: #374151;
             color: #f3f4f6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .excel-cell:focus {
             border: 1px solid #3b82f6;
@@ -49,6 +53,9 @@
             text-align: center;
             padding: 10px;
             border: 1px solid #e2e8f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .status-clean {
             background-color: #d1fae5;
@@ -150,7 +157,7 @@
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto bg-gray-800 rounded-lg shadow-xl overflow-hidden hover-scale transition-all duration-300">
+    <div class="w-full bg-gray-800 rounded-lg shadow-xl overflow-hidden hover-scale transition-all duration-300">
         <div class="bg-gradient-to-r from-blue-700 to-blue-900 p-6 text-white text-center">
             <h1 class="text-3xl font-bold mb-2 animate-fade-in"><i class="fas fa-hotel mr-2"></i>Hotel Guest Booking System</h1>
             <p class="text-lg opacity-90 animate-fade-in-delay">Professional Guest Registration Management</p>
@@ -173,7 +180,7 @@
             </div>
         </div>
         
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto w-full">
             <table class="w-full">
                 <thead>
                     <tr>
