@@ -512,10 +512,13 @@
                 
                 // Add event listener to the delete button
                 newRow.querySelector('.delete-row').addEventListener('click', function() {
-                    newRow.remove();
-                    updateRowNumbers();
-                    updateTotalGuests();
-                    updateAnalytics();
+                    if (confirm('Are you sure you want to delete this guest?')) {
+                        const row = this.closest('tr');
+                        row.remove();
+                        updateRowNumbers();
+                        updateTotalGuests();
+                        updateAnalytics();
+                    }
                 });
                 
                 // Calculate nights for the new entry
@@ -626,6 +629,17 @@
                 document.getElementById('totalRevenueCard').textContent = `KSh ${totalRevenue.toLocaleString()}`;
             }
             
+            // Add event listeners to existing delete buttons
+            document.querySelectorAll('.excel-cell button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    row.remove();
+                    updateRowNumbers();
+                    updateTotalGuests();
+                    updateAnalytics();
+                });
+            });
+
             // Initialize calculations
             calculateNights();
             updateTotalGuests();
