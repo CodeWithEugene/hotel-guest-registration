@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Guest Booking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .animate-fade-in-delay {
+            animation: fadeIn 0.5s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+        .hover-scale {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .click-effect:active {
+            transform: scale(0.98);
+        }
+        .excel-cell {
+            min-width: 120px;
+            height: 40px;
+            padding: 8px;
+            border: 1px solid #4b5563;
+            font-size: 14px;
+            outline: none;
+            background-color: #374151;
+            color: #f3f4f6;
+        }
+        .excel-cell:focus {
+            border: 1px solid #3b82f6;
+            background-color: #4b5563;
+        }
+        .header-cell {
+            background-color: #1e3a8a;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .status-clean {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-occupied {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-option {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .dropdown-option:hover {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 p-6">
+    <!-- Guest Add Modal -->
+    <div id="guestModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 opacity-0 modal-content">
+            <div class="flex justify-between items-center border-b p-4">
+                <h3 class="text-lg font-semibold">Add New Guest</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Guest Name</label>
+                        <input type="text" id="guestName" class="w-full border rounded px-3 py-2 bg-gray-700 text-white border-gray-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Room Assigned</label>
+                        <input type="text" id="roomAssigned" class="w-full border rounded px-3 py-2 bg-gray-700 text-white border-gray-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Reservation Type</label>
+                        <select id="reservationType" class="w-full border rounded px-3 py-2">
+                            <option value="Reserved">Reserved</option>
+                            <option value="Walk-in" selected>Walk-in</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nationality</label>
+                        <input type="text" id="nationality" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                        <input type="text" id="mobileNumber" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Arrival Date</label>
+                        <input type="date" id="arrivalDate" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
+                        <input type="date" id="departureDate" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Mode</label>
+                        <select id="paymentMode" class="w-full border rounded px-3 py-2">
+                            <option value="Cash">Cash</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Mobile Payment">Mobile Payment</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Receipt Number</label>
+                        <input type="text" id="receiptNumber" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+            </div>
+            <div class="border-t p-4 flex justify-end space-x-3">
+                <button id="cancelAdd" class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 hover-scale click-effect transition-all">Cancel</button>
+                <button id="saveGuest" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover-scale click-effect transition-all">Save Guest</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto bg-gray-800 rounded-lg shadow-xl overflow-hidden hover-scale transition-all duration-300">
+        <div class="bg-gradient-to-r from-blue-700 to-blue-900 p-6 text-white text-center">
+            <h1 class="text-3xl font-bold mb-2 animate-fade-in"><i class="fas fa-hotel mr-2"></i>Hotel Guest Booking System</h1>
+            <p class="text-lg opacity-90 animate-fade-in-delay">Professional Guest Registration Management</p>
+        </div>
+        
+        <div class="p-4 border-b flex justify-between items-center">
+            <div class="flex space-x-2">
+                <button id="addGuest" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center hover-scale click-effect transition-all">
+                    <i class="fas fa-user-plus mr-2"></i> Add Guest
+                </button>
+                <button id="printReport" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center hover-scale click-effect transition-all">
+                    <i class="fas fa-print mr-2"></i> Print Report
+                </button>
+            </div>
+            <div class="flex items-center">
+                <input type="text" id="searchInput" placeholder="Search guests..." class="border rounded-l px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white border-gray-600">
+                <button id="searchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th class="header-cell">No.</th>
+                        <th class="header-cell">Guest Name</th>
+                        <th class="header-cell">Room Assigned</th>
+                        <th class="header-cell">Reservation Type</th>
+                        <th class="header-cell">Nationality</th>
+                        <th class="header-cell">Mobile Number</th>
+                        <th class="header-cell">Arrival Date</th>
+                        <th class="header-cell">Departure Date</th>
+                        <th class="header-cell">Nights</th>
+                        <th class="header-cell">Payment Mode</th>
+                        <th class="header-cell">Receipt No.</th>
+                        <th class="header-cell">Room Status</th>
+                        <th class="header-cell">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="guestTableBody">
+                    <!-- Sample data row -->
+                    <tr>
+                        <td class="excel-cell">1</td>
+                        <td class="excel-cell" contenteditable="true">Wanjiku Mwangi</td>
+                        <td class="excel-cell" contenteditable="true">Deluxe 12</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Reserved">Reserved</option>
+                                <option value="Walk-in" selected>Walk-in</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">Kenyan</td>
+                        <td class="excel-cell" contenteditable="true">+254 712 345678</td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-15">
+                        </td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-18">
+                        </td>
+                        <td class="excel-cell">3</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Cash">Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Bank Transfer" selected>Bank Transfer</option>
+                                <option value="Mobile Payment">Mobile Payment</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">MP-00123</td>
+                        <td class="excel-cell status-occupied">Occupied</td>
+                        <td class="excel-cell">
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="excel-cell">2</td>
+                        <td class="excel-cell" contenteditable="true">James Kamau</td>
+                        <td class="excel-cell" contenteditable="true">Suite 5</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Reserved" selected>Reserved</option>
+                                <option value="Walk-in">Walk-in</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">Kenyan</td>
+                        <td class="excel-cell" contenteditable="true">+254 723 456789</td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-16">
+                        </td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-20">
+                        </td>
+                        <td class="excel-cell">4</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Cash" selected>Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Mobile Payment">Mobile Payment</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">CSH-00456</td>
+                        <td class="excel-cell status-occupied">Occupied</td>
+                        <td class="excel-cell">
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="excel-cell">3</td>
+                        <td class="excel-cell" contenteditable="true">Sarah Johnson</td>
+                        <td class="excel-cell" contenteditable="true">Executive 8</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Reserved" selected>Reserved</option>
+                                <option value="Walk-in">Walk-in</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">American</td>
+                        <td class="excel-cell" contenteditable="true">+1 555 7890123</td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-14">
+                        </td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-17">
+                        </td>
+                        <td class="excel-cell">3</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Cash">Cash</option>
+                                <option value="Credit Card" selected>Credit Card</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Mobile Payment">Mobile Payment</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">CC-00789</td>
+                        <td class="excel-cell status-occupied">Occupied</td>
+                        <td class="excel-cell">
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="excel-cell">4</td>
+                        <td class="excel-cell" contenteditable="true">Mohamed Ali</td>
+                        <td class="excel-cell" contenteditable="true">Standard 3</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Reserved">Reserved</option>
+                                <option value="Walk-in" selected>Walk-in</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">Somali</td>
+                        <td class="excel-cell" contenteditable="true">+252 612 345678</td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-17">
+                        </td>
+                        <td class="excel-cell">
+                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-19">
+                        </td>
+                        <td class="excel-cell">2</td>
+                        <td class="excel-cell">
+                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                                <option value="Cash">Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Mobile Payment" selected>Mobile Payment</option>
+                            </select>
+                        </td>
+                        <td class="excel-cell" contenteditable="true">MP-00321</td>
+                        <td class="excel-cell status-occupied">Occupied</td>
+                        <td class="excel-cell">
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="p-4 bg-gray-700 flex justify-between items-center border-t border-gray-600">
+            <div class="text-sm text-gray-300">
+                <span id="totalGuests">1</span> guest(s) registered
+            </div>
+            <div class="flex space-x-2">
+                <button class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="px-3 py-1">1</span>
+                <button class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-800">
+            <div class="bg-blue-900 rounded-lg p-4 hover-scale transition-all">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-300 text-sm">Total Guests</p>
+                        <h3 class="text-2xl font-bold text-white" id="totalGuestsCard">0</h3>
+                    </div>
+                    <div class="bg-blue-700 p-3 rounded-full">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-red-900 rounded-lg p-4 hover-scale transition-all">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-300 text-sm">Occupied Rooms</p>
+                        <h3 class="text-2xl font-bold text-white" id="occupiedRoomsCard">0</h3>
+                    </div>
+                    <div class="bg-red-700 p-3 rounded-full">
+                        <i class="fas fa-bed text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-green-900 rounded-lg p-4 hover-scale transition-all">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-300 text-sm">Clean Rooms</p>
+                        <h3 class="text-2xl font-bold text-white" id="cleanRoomsCard">0</h3>
+                    </div>
+                    <div class="bg-green-700 p-3 rounded-full">
+                        <i class="fas fa-broom text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-purple-900 rounded-lg p-4 hover-scale transition-all">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-300 text-sm">Total Revenue</p>
+                        <h3 class="text-2xl font-bold text-white" id="totalRevenueCard">KSh 0</h3>
+                    </div>
+                    <div class="bg-purple-700 p-3 rounded-full">
+                        <i class="fas fa-money-bill-wave text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal elements
+            const modal = document.getElementById('guestModal');
+            const addGuestBtn = document.getElementById('addGuest');
+            const closeModalBtn = document.getElementById('closeModal');
+            const cancelAddBtn = document.getElementById('cancelAdd');
+            const saveGuestBtn = document.getElementById('saveGuest');
+            
+            // Show modal with animation
+            addGuestBtn.addEventListener('click', function() {
+                const modalContent = document.querySelector('.modal-content');
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                // Set today's date as default
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('arrivalDate').value = today;
+                document.getElementById('departureDate').value = today;
+                
+                // Clear other fields
+                document.getElementById('guestName').value = '';
+                document.getElementById('roomAssigned').value = '';
+                document.getElementById('nationality').value = '';
+                document.getElementById('mobileNumber').value = '';
+                document.getElementById('receiptNumber').value = '';
+                
+                modal.classList.remove('hidden');
+            });
+            
+            // Close modal with animation
+            function closeModal() {
+                const modalContent = document.querySelector('.modal-content');
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+            
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelAddBtn.addEventListener('click', closeModal);
+            
+            // Save new guest
+            saveGuestBtn.addEventListener('click', function() {
+                const tbody = document.getElementById('guestTableBody');
+                const rowCount = tbody.children.length + 1;
+                
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="excel-cell">${rowCount}</td>
+                    <td class="excel-cell" contenteditable="true">${document.getElementById('guestName').value}</td>
+                    <td class="excel-cell" contenteditable="true">${document.getElementById('roomAssigned').value}</td>
+                    <td class="excel-cell">
+                        <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                            <option value="Reserved" ${document.getElementById('reservationType').value === 'Reserved' ? 'selected' : ''}>Reserved</option>
+                            <option value="Walk-in" ${document.getElementById('reservationType').value === 'Walk-in' ? 'selected' : ''}>Walk-in</option>
+                        </select>
+                    </td>
+                    <td class="excel-cell" contenteditable="true">${document.getElementById('nationality').value}</td>
+                    <td class="excel-cell" contenteditable="true">${document.getElementById('mobileNumber').value}</td>
+                    <td class="excel-cell">
+                        <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="${document.getElementById('arrivalDate').value}">
+                    </td>
+                    <td class="excel-cell">
+                        <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="${document.getElementById('departureDate').value}">
+                    </td>
+                    <td class="excel-cell">0</td>
+                    <td class="excel-cell">
+                        <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                            <option value="Cash" ${document.getElementById('paymentMode').value === 'Cash' ? 'selected' : ''}>Cash</option>
+                            <option value="Credit Card" ${document.getElementById('paymentMode').value === 'Credit Card' ? 'selected' : ''}>Credit Card</option>
+                            <option value="Bank Transfer" ${document.getElementById('paymentMode').value === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+                            <option value="Mobile Payment" ${document.getElementById('paymentMode').value === 'Mobile Payment' ? 'selected' : ''}>Mobile Payment</option>
+                        </select>
+                    </td>
+                    <td class="excel-cell" contenteditable="true">${document.getElementById('receiptNumber').value}</td>
+                    <td class="excel-cell status-clean">Clean</td>
+                    <td class="excel-cell">
+                        <button class="text-red-500 hover:text-red-700 delete-row">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(newRow);
+                closeModal();
+                updateTotalGuests();
+                updateAnalytics();
+                
+                // Add event listeners to the new date inputs
+                const dateInputs = newRow.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(input => {
+                    input.addEventListener('change', calculateNights);
+                });
+                
+                // Add event listener to the delete button
+                newRow.querySelector('.delete-row').addEventListener('click', function() {
+                    newRow.remove();
+                    updateRowNumbers();
+                    updateTotalGuests();
+                    updateAnalytics();
+                });
+                
+                // Calculate nights for the new entry
+                calculateNights();
+            });
+            
+            // Calculate nights stayed when dates change
+            function calculateNights() {
+                const rows = document.querySelectorAll('#guestTableBody tr');
+                rows.forEach(row => {
+                    const arrivalInput = row.querySelector('input[type="date"]:nth-of-type(1)');
+                    const departureInput = row.querySelector('input[type="date"]:nth-of-type(2)');
+                    const nightsCell = row.querySelector('td:nth-child(9)');
+                    
+                    if (arrivalInput && departureInput && nightsCell) {
+                        const arrivalDate = new Date(arrivalInput.value);
+                        const departureDate = new Date(departureInput.value);
+                        
+                        if (!isNaN(arrivalDate.getTime()) && !isNaN(departureDate.getTime())) {
+                            const timeDiff = departureDate.getTime() - arrivalDate.getTime();
+                            const nightDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                            
+                            if (nightDiff >= 0) {
+                                nightsCell.textContent = nightDiff;
+                                
+                                // Update room status based on dates
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                const roomStatusCell = row.querySelector('td:nth-child(12)');
+                                
+                                if (arrivalDate <= today && departureDate >= today) {
+                                    roomStatusCell.textContent = 'Occupied';
+                                    roomStatusCell.className = 'excel-cell status-occupied';
+                                } else if (departureDate < today) {
+                                    roomStatusCell.textContent = 'Clean';
+                                    roomStatusCell.className = 'excel-cell status-clean';
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Add event listeners to existing date inputs
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                input.addEventListener('change', calculateNights);
+            });
+            
+            // Update row numbers after deletion
+            function updateRowNumbers() {
+                const rows = document.querySelectorAll('#guestTableBody tr');
+                rows.forEach((row, index) => {
+                    row.querySelector('td:first-child').textContent = index + 1;
+                });
+            }
+            
+            // Update total guests count
+            function updateTotalGuests() {
+                const total = document.querySelectorAll('#guestTableBody tr').length;
+                document.getElementById('totalGuests').textContent = total;
+            }
+            
+            // Print report functionality
+            document.getElementById('printReport').addEventListener('click', function() {
+                window.print();
+            });
+            
+            // Search functionality
+            document.getElementById('searchBtn').addEventListener('click', function() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const rows = document.querySelectorAll('#guestTableBody tr');
+                
+                rows.forEach(row => {
+                    const nameCell = row.querySelector('td:nth-child(2)');
+                    const roomCell = row.querySelector('td:nth-child(3)');
+                    const shouldShow = nameCell.textContent.toLowerCase().includes(searchTerm) || 
+                                      roomCell.textContent.toLowerCase().includes(searchTerm);
+                    
+                    row.style.display = shouldShow ? '' : 'none';
+                });
+            });
+            
+            // Update analytics cards
+            function updateAnalytics() {
+                const rows = document.querySelectorAll('#guestTableBody tr');
+                let occupiedCount = 0;
+                let cleanCount = 0;
+                let totalRevenue = 0;
+                
+                rows.forEach(row => {
+                    const statusCell = row.querySelector('td:nth-child(12)');
+                    const nightsCell = row.querySelector('td:nth-child(9)');
+                    
+                    if (statusCell.textContent === 'Occupied') {
+                        occupiedCount++;
+                    } else if (statusCell.textContent === 'Clean') {
+                        cleanCount++;
+                    }
+                    
+                    // Simple revenue calculation: 5000 KSh per night
+                    const nights = parseInt(nightsCell.textContent) || 0;
+                    totalRevenue += nights * 5000;
+                });
+                
+                document.getElementById('totalGuestsCard').textContent = rows.length;
+                document.getElementById('occupiedRoomsCard').textContent = occupiedCount;
+                document.getElementById('cleanRoomsCard').textContent = cleanCount;
+                document.getElementById('totalRevenueCard').textContent = `KSh ${totalRevenue.toLocaleString()}`;
+            }
+            
+            // Initialize calculations
+            calculateNights();
+            updateTotalGuests();
+            updateAnalytics();
+        });
+    </script>
+</body>
+</html>
