@@ -88,9 +88,44 @@
         .dropdown-option:hover {
             background-color: #f1f5f9;
         }
+        
+        /* Mobile-specific improvements */
+        @media (max-width: 768px) {
+            .table-container {
+                margin: 16px 8px;
+                padding: 16px;
+            }
+            
+            .analytics-card {
+                padding: 16px;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            .search-input {
+                width: 100%;
+            }
+            
+            .btn-success, .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .header-section h1 {
+                font-size: 1.875rem;
+            }
+            
+            .analytics-card h3 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-900 p-6">
+<body class="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 min-h-screen p-6">
     <!-- Guest Add Modal -->
     <div id="guestModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 opacity-0 modal-content">
@@ -157,260 +192,276 @@
         </div>
     </div>
 
-    <div class="w-full bg-gray-800 rounded-lg shadow-xl overflow-hidden hover-scale transition-all duration-300">
-        <div class="bg-gradient-to-r from-blue-700 to-blue-900 p-6 text-white text-center">
-            <h1 class="text-3xl font-bold mb-2 animate-fade-in"><i class="fas fa-hotel mr-2"></i>Hotel Guest Booking System</h1>
-            <p class="text-lg opacity-90 animate-fade-in-delay">Professional Guest Registration Management</p>
-        </div>
-        
-        <div class="p-4 border-b flex justify-between items-center">
-            <div class="flex space-x-2">
-                <button id="addGuest" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center hover-scale click-effect transition-all">
-                    <i class="fas fa-user-plus mr-2"></i> Add Guest
-                </button>
-                <button id="printReport" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center hover-scale click-effect transition-all">
-                    <i class="fas fa-print mr-2"></i> Print Report
-                </button>
-            </div>
-            <div class="flex items-center">
-                <input type="text" id="searchInput" placeholder="Search guests..." class="border rounded-l px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white border-gray-600">
-                <button id="searchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
-                    <i class="fas fa-search"></i>
-                </button>
+    <div class="w-full min-h-screen">
+        <!-- Header Section -->
+        <div class="text-center mb-4 md:mb-8 px-4">
+            <div class="inline-block p-4 md:p-8 rounded-2xl md:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 animate-fade-in w-full max-w-4xl">
+                <h1 class="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    <i class="fas fa-hotel mr-2 md:mr-4"></i>Hotel Guest Booking System
+                </h1>
+                <p class="text-base md:text-xl text-gray-300 animate-fade-in-delay">Professional Guest Registration Management</p>
             </div>
         </div>
         
-        <div class="overflow-x-auto w-full">
+        <!-- Analytics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-8 px-4">
+            <div class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-xl md:rounded-2xl p-4 md:p-6 hover:scale-105 transition-all duration-300 shadow-xl border border-blue-700/50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-200 text-xs md:text-sm font-medium">Total Guests</p>
+                        <h3 class="text-xl md:text-2xl lg:text-3xl font-bold text-white" id="totalGuestsCard">0</h3>
+                    </div>
+                    <div class="bg-blue-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-lg">
+                        <i class="fas fa-users text-white text-lg md:text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-red-900 to-red-800 rounded-xl md:rounded-2xl p-4 md:p-6 hover:scale-105 transition-all duration-300 shadow-xl border border-red-700/50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-red-200 text-xs md:text-sm font-medium">Occupied Rooms</p>
+                        <h3 class="text-xl md:text-2xl lg:text-3xl font-bold text-white" id="occupiedRoomsCard">0</h3>
+                    </div>
+                    <div class="bg-red-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-lg">
+                        <i class="fas fa-bed text-white text-lg md:text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-900 to-green-800 rounded-xl md:rounded-2xl p-4 md:p-6 hover:scale-105 transition-all duration-300 shadow-xl border border-green-700/50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-200 text-xs md:text-sm font-medium">Clean Rooms</p>
+                        <h3 class="text-xl md:text-2xl lg:text-3xl font-bold text-white" id="cleanRoomsCard">0</h3>
+                    </div>
+                    <div class="bg-green-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-lg">
+                        <i class="fas fa-broom text-white text-lg md:text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-900 to-purple-800 rounded-xl md:rounded-2xl p-4 md:p-6 hover:scale-105 transition-all duration-300 shadow-xl border border-purple-700/50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-purple-200 text-xs md:text-sm font-medium">Total Revenue</p>
+                        <h3 class="text-xl md:text-2xl lg:text-3xl font-bold text-white" id="totalRevenueCard">KSh 0</h3>
+                    </div>
+                    <div class="bg-purple-600 p-2 md:p-4 rounded-xl md:rounded-2xl shadow-lg">
+                        <i class="fas fa-money-bill-wave text-white text-lg md:text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                <!-- Control Panel -->
+        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-2xl border border-gray-700/50 mb-4 md:mb-8 mx-4">
+            <div class="flex flex-col lg:flex-row justify-between items-center mb-4 md:mb-6 space-y-4 lg:space-y-0">
+                <div class="flex flex-wrap gap-2 md:gap-3 w-full lg:w-auto justify-center lg:justify-start">
+                    <button id="addGuest" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl flex items-center font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-sm md:text-base">
+                        <i class="fas fa-user-plus mr-2"></i> Add Guest
+                    </button>
+                    <button id="printReport" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl flex items-center font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-sm md:text-base">
+                        <i class="fas fa-print mr-2"></i> Print Report
+                    </button>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center w-full lg:w-auto space-y-3 sm:space-y-0 sm:space-x-3">
+                    <div class="relative w-full sm:w-auto">
+                        <input type="text" id="searchInput" placeholder="Search guests..." class="w-full sm:w-64 md:w-80 px-4 py-2 md:py-3 pl-12 bg-gray-800/50 border border-gray-600 rounded-lg md:rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm text-sm md:text-base">
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <button id="searchBtn" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-sm md:text-base">
+                        <i class="fas fa-search mr-2"></i> Search
+                    </button>
+                </div>
+            </div>
+        
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl md:rounded-2xl p-4 md:p-6 shadow-xl border border-gray-700/50 mx-4">
             <table class="w-full">
                 <thead>
                     <tr>
-                        <th class="header-cell">No.</th>
-                        <th class="header-cell">Guest Name</th>
-                        <th class="header-cell">Room Assigned</th>
-                        <th class="header-cell">Reservation Type</th>
-                        <th class="header-cell">Nationality</th>
-                        <th class="header-cell">Mobile Number</th>
-                        <th class="header-cell">Arrival Date</th>
-                        <th class="header-cell">Departure Date</th>
-                        <th class="header-cell">Nights</th>
-                        <th class="header-cell">Payment Mode</th>
-                        <th class="header-cell">Receipt No.</th>
-                        <th class="header-cell">Room Status</th>
-                        <th class="header-cell">Actions</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">No.</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Guest Name</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Room Assigned</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Reservation Type</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Nationality</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Mobile Number</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Arrival Date</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Departure Date</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Nights</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Payment Mode</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Receipt No.</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Room Status</th>
+                        <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-center py-4 px-3 rounded-xl shadow-lg">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="guestTableBody">
                     <!-- Sample data row -->
                     <tr>
-                        <td class="excel-cell">1</td>
-                        <td class="excel-cell" contenteditable="true">Wanjiku Mwangi</td>
-                        <td class="excel-cell" contenteditable="true">Deluxe 12</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">1</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Wanjiku Mwangi</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Deluxe 12</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Reserved">Reserved</option>
                                 <option value="Walk-in" selected>Walk-in</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">Kenyan</td>
-                        <td class="excel-cell" contenteditable="true">+254 712 345678</td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-15">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Kenyan</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">+254 712 345678</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-15">
                         </td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-18">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-18">
                         </td>
-                        <td class="excel-cell">3</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">3</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Cash">Cash</option>
                                 <option value="Credit Card">Credit Card</option>
                                 <option value="Bank Transfer" selected>Bank Transfer</option>
                                 <option value="Mobile Payment">Mobile Payment</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">MP-00123</td>
-                        <td class="excel-cell status-occupied">Occupied</td>
-                        <td class="excel-cell">
-                            <button class="text-red-500 hover:text-red-700">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">MP-00123</td>
+                        <td class="bg-gradient-to-r from-red-500 to-red-600 text-white font-medium text-center rounded-full px-4 py-2">Occupied</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center">
+                            <button class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-900/20">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
                     </tr>
                     <tr>
-                        <td class="excel-cell">2</td>
-                        <td class="excel-cell" contenteditable="true">James Kamau</td>
-                        <td class="excel-cell" contenteditable="true">Suite 5</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">2</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">James Kamau</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Suite 5</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Reserved" selected>Reserved</option>
                                 <option value="Walk-in">Walk-in</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">Kenyan</td>
-                        <td class="excel-cell" contenteditable="true">+254 723 456789</td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-16">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Kenyan</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">+254 723 456789</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-16">
                         </td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-20">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-20">
                         </td>
-                        <td class="excel-cell">4</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">4</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Cash" selected>Cash</option>
                                 <option value="Credit Card">Credit Card</option>
                                 <option value="Bank Transfer">Bank Transfer</option>
                                 <option value="Mobile Payment">Mobile Payment</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">CSH-00456</td>
-                        <td class="excel-cell status-occupied">Occupied</td>
-                        <td class="excel-cell">
-                            <button class="text-red-500 hover:text-red-700">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">CSH-00456</td>
+                        <td class="bg-gradient-to-r from-red-500 to-red-600 text-white font-medium text-center rounded-full px-4 py-2">Occupied</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center">
+                            <button class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-900/20">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
                     </tr>
                     <tr>
-                        <td class="excel-cell">3</td>
-                        <td class="excel-cell" contenteditable="true">Sarah Johnson</td>
-                        <td class="excel-cell" contenteditable="true">Executive 8</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">3</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Sarah Johnson</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Executive 8</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Reserved" selected>Reserved</option>
                                 <option value="Walk-in">Walk-in</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">American</td>
-                        <td class="excel-cell" contenteditable="true">+1 555 7890123</td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-14">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">American</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">+1 555 7890123</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-14">
                         </td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-17">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-17">
                         </td>
-                        <td class="excel-cell">3</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">3</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Cash">Cash</option>
                                 <option value="Credit Card" selected>Credit Card</option>
                                 <option value="Bank Transfer">Bank Transfer</option>
                                 <option value="Mobile Payment">Mobile Payment</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">CC-00789</td>
-                        <td class="excel-cell status-occupied">Occupied</td>
-                        <td class="excel-cell">
-                            <button class="text-red-500 hover:text-red-700">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">CC-00789</td>
+                        <td class="bg-gradient-to-r from-red-500 to-red-600 text-white font-medium text-center rounded-full px-4 py-2">Occupied</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center">
+                            <button class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-900/20">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
                     </tr>
                     <tr>
-                        <td class="excel-cell">4</td>
-                        <td class="excel-cell" contenteditable="true">Mohamed Ali</td>
-                        <td class="excel-cell" contenteditable="true">Standard 3</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">4</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Mohamed Ali</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Standard 3</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Reserved">Reserved</option>
                                 <option value="Walk-in" selected>Walk-in</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">Somali</td>
-                        <td class="excel-cell" contenteditable="true">+252 612 345678</td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-17">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">Somali</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">+252 612 345678</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-17">
                         </td>
-                        <td class="excel-cell">
-                            <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="2023-11-19">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="2023-11-19">
                         </td>
-                        <td class="excel-cell">2</td>
-                        <td class="excel-cell">
-                            <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">2</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <option value="Cash">Cash</option>
                                 <option value="Credit Card">Credit Card</option>
                                 <option value="Bank Transfer">Bank Transfer</option>
                                 <option value="Mobile Payment" selected>Mobile Payment</option>
                             </select>
                         </td>
-                        <td class="excel-cell" contenteditable="true">MP-00321</td>
-                        <td class="excel-cell status-occupied">Occupied</td>
-                        <td class="excel-cell">
-                            <button class="text-red-500 hover:text-red-700">
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">MP-00321</td>
+                        <td class="bg-gradient-to-r from-red-500 to-red-600 text-white font-medium text-center rounded-full px-4 py-2">Occupied</td>
+                        <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center">
+                            <button class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-900/20">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
                     </tr>
                 </tbody>
-            </table>
-        </div>
-        
-        <div class="p-4 bg-gray-700 flex justify-between items-center border-t border-gray-600">
-            <div class="text-sm text-gray-300">
-                <span id="totalGuests">1</span> guest(s) registered
+                </table>
             </div>
-            <div class="flex space-x-2">
-                <button class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <span class="px-3 py-1">1</span>
-                <button class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Analytics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-800">
-            <div class="bg-blue-900 rounded-lg p-4 hover-scale transition-all">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-300 text-sm">Total Guests</p>
-                        <h3 class="text-2xl font-bold text-white" id="totalGuestsCard">0</h3>
-                    </div>
-                    <div class="bg-blue-700 p-3 rounded-full">
-                        <i class="fas fa-users text-white text-xl"></i>
-                    </div>
+            
+            <!-- Footer -->
+                        <div class="flex flex-col lg:flex-row justify-between items-center mt-6 pt-6 border-t border-gray-600">
+                <div class="text-sm text-gray-400">
+                    <span id="totalGuests">4</span> guest(s) registered
                 </div>
-            </div>
-
-            <div class="bg-red-900 rounded-lg p-4 hover-scale transition-all">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-300 text-sm">Occupied Rooms</p>
-                        <h3 class="text-2xl font-bold text-white" id="occupiedRoomsCard">0</h3>
-                    </div>
-                    <div class="bg-red-700 p-3 rounded-full">
-                        <i class="fas fa-bed text-white text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-green-900 rounded-lg p-4 hover-scale transition-all">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-300 text-sm">Clean Rooms</p>
-                        <h3 class="text-2xl font-bold text-white" id="cleanRoomsCard">0</h3>
-                    </div>
-                    <div class="bg-green-700 p-3 rounded-full">
-                        <i class="fas fa-broom text-white text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-purple-900 rounded-lg p-4 hover-scale transition-all">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-300 text-sm">Total Revenue</p>
-                        <h3 class="text-2xl font-bold text-white" id="totalRevenueCard">KSh 0</h3>
-                    </div>
-                    <div class="bg-purple-700 p-3 rounded-full">
-                        <i class="fas fa-money-bill-wave text-white text-xl"></i>
-                    </div>
+                <div class="flex items-center space-x-2">
+                    <button class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="px-4 py-2 text-white font-medium">1</span>
+                    <button class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -464,36 +515,36 @@
                 
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                    <td class="excel-cell">${rowCount}</td>
-                    <td class="excel-cell" contenteditable="true">${document.getElementById('guestName').value}</td>
-                    <td class="excel-cell" contenteditable="true">${document.getElementById('roomAssigned').value}</td>
-                    <td class="excel-cell">
-                        <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">${rowCount}</td>
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">${document.getElementById('guestName').value}</td>
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">${document.getElementById('roomAssigned').value}</td>
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                        <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                             <option value="Reserved" ${document.getElementById('reservationType').value === 'Reserved' ? 'selected' : ''}>Reserved</option>
                             <option value="Walk-in" ${document.getElementById('reservationType').value === 'Walk-in' ? 'selected' : ''}>Walk-in</option>
                         </select>
                     </td>
-                    <td class="excel-cell" contenteditable="true">${document.getElementById('nationality').value}</td>
-                    <td class="excel-cell" contenteditable="true">${document.getElementById('mobileNumber').value}</td>
-                    <td class="excel-cell">
-                        <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="${document.getElementById('arrivalDate').value}">
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">${document.getElementById('nationality').value}</td>
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">${document.getElementById('mobileNumber').value}</td>
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                        <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="${document.getElementById('arrivalDate').value}">
                     </td>
-                    <td class="excel-cell">
-                        <input type="date" class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded" value="${document.getElementById('departureDate').value}">
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                        <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" value="${document.getElementById('departureDate').value}">
                     </td>
-                    <td class="excel-cell">0</td>
-                    <td class="excel-cell">
-                        <select class="w-full bg-transparent border-none focus:ring-2 focus:ring-blue-500 rounded">
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-white font-medium">0</td>
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3">
+                        <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                             <option value="Cash" ${document.getElementById('paymentMode').value === 'Cash' ? 'selected' : ''}>Cash</option>
                             <option value="Credit Card" ${document.getElementById('paymentMode').value === 'Credit Card' ? 'selected' : ''}>Credit Card</option>
                             <option value="Bank Transfer" ${document.getElementById('paymentMode').value === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
                             <option value="Mobile Payment" ${document.getElementById('paymentMode').value === 'Mobile Payment' ? 'selected' : ''}>Mobile Payment</option>
                         </select>
                     </td>
-                    <td class="excel-cell" contenteditable="true">${document.getElementById('receiptNumber').value}</td>
-                    <td class="excel-cell status-clean">Clean</td>
-                    <td class="excel-cell">
-                        <button class="text-red-500 hover:text-red-700 delete-row">
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white hover:bg-gray-700/50 transition-colors" contenteditable="true">${document.getElementById('receiptNumber').value}</td>
+                    <td class="bg-gradient-to-r from-green-500 to-green-600 text-white font-medium text-center rounded-full px-4 py-2">Clean</td>
+                    <td class="bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center">
+                        <button class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-900/20 delete-row">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
@@ -551,10 +602,10 @@
                                 
                                 if (arrivalDate <= today && departureDate >= today) {
                                     roomStatusCell.textContent = 'Occupied';
-                                    roomStatusCell.className = 'excel-cell status-occupied';
+                                    roomStatusCell.className = 'bg-gradient-to-r from-red-500 to-red-600 text-white font-medium text-center rounded-full px-4 py-2';
                                 } else if (departureDate < today) {
                                     roomStatusCell.textContent = 'Clean';
-                                    roomStatusCell.className = 'excel-cell status-clean';
+                                    roomStatusCell.className = 'bg-gradient-to-r from-green-500 to-green-600 text-white font-medium text-center rounded-full px-4 py-2';
                                 }
                             }
                         }
@@ -612,32 +663,44 @@
                     const statusCell = row.querySelector('td:nth-child(12)');
                     const nightsCell = row.querySelector('td:nth-child(9)');
                     
-                    if (statusCell.textContent === 'Occupied') {
+                    if (statusCell && statusCell.textContent === 'Occupied') {
                         occupiedCount++;
-                    } else if (statusCell.textContent === 'Clean') {
+                    } else if (statusCell && statusCell.textContent === 'Clean') {
                         cleanCount++;
                     }
                     
                     // Simple revenue calculation: 5000 KSh per night
-                    const nights = parseInt(nightsCell.textContent) || 0;
-                    totalRevenue += nights * 5000;
+                    if (nightsCell) {
+                        const nights = parseInt(nightsCell.textContent) || 0;
+                        totalRevenue += nights * 5000;
+                    }
                 });
                 
-                document.getElementById('totalGuestsCard').textContent = rows.length;
+                const totalGuests = rows.length;
+                
+                // Update all analytics cards
+                document.getElementById('totalGuestsCard').textContent = totalGuests;
                 document.getElementById('occupiedRoomsCard').textContent = occupiedCount;
                 document.getElementById('cleanRoomsCard').textContent = cleanCount;
                 document.getElementById('totalRevenueCard').textContent = `KSh ${totalRevenue.toLocaleString()}`;
+                
+                // Also update the footer total
+                document.getElementById('totalGuests').textContent = totalGuests;
+                
+                console.log('Analytics updated:', { totalGuests, occupiedCount, cleanCount, totalRevenue });
             }
             
             // Add event listeners to existing delete buttons
-            document.querySelectorAll('.excel-cell button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    row.remove();
-                    updateRowNumbers();
-                    updateTotalGuests();
-                    updateAnalytics();
-                });
+            document.querySelectorAll('button').forEach(button => {
+                if (button.innerHTML.includes('fa-trash-alt')) {
+                    button.addEventListener('click', function() {
+                        const row = this.closest('tr');
+                        row.remove();
+                        updateRowNumbers();
+                        updateTotalGuests();
+                        updateAnalytics();
+                    });
+                }
             });
 
             // Initialize calculations
