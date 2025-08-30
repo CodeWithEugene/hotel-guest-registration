@@ -7,149 +7,431 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
         .animate-fade-in-delay {
-            animation: fadeIn 0.5s ease-out 0.2s forwards;
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
             opacity: 0;
         }
+        
+        .animate-slide-in {
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
         .hover-scale {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
         .hover-scale:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
+        
         .click-effect:active {
             transform: scale(0.98);
         }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
         .excel-cell {
             min-width: 120px;
             height: 40px;
-            padding: 8px;
+            padding: 8px 12px;
             border: 1px solid #4b5563;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             outline: none;
-            background-color: #374151;
-            color: #f3f4f6;
+            background: #1f2937;
+            color: #f9fafb;
             text-align: center;
-        }
-        .excel-cell:focus {
-            border: 1px solid #3b82f6;
-            background-color: #4b5563;
-            outline: none;
-        }
-        .header-cell {
-            background-color: #1e3a8a;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            padding: 10px;
-            border: 1px solid #e2e8f0;
-            white-space: nowrap;
-        }
-        .status-clean {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-        .status-occupied {
-            background-color: #fee2e2;
-            color: #991b1b;
+            transition: all 0.2s ease;
+            border-radius: 6px;
         }
         
-        /* Full screen table styles */
-        table {
-            border-collapse: collapse;
+        .excel-cell:hover {
+            background: #374151;
+            border-color: #6b7280;
+        }
+        
+        .excel-cell:focus {
+            border-color: #3b82f6;
+            background: #1e40af;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+        
+        .header-cell {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px 16px;
+            border: none;
+            white-space: nowrap;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .header-cell:hover::before {
+            left: 100%;
+        }
+        
+        .status-clean {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-occupied {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-weight: 600;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Modern table styles */
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
         }
         
         th, td {
-            border: 1px solid #4b5563;
+            border: none;
+        }
+        
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
         }
         
         /* Ensure table takes full height */
         .flex-1 {
             flex: 1;
             min-height: 0;
+            overflow: hidden;
         }
-        .dropdown {
-            position: relative;
-            display: inline-block;
+        
+        /* Prevent overspilling */
+        .h-screen {
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
         }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+        
+        /* Compact layout adjustments */
+        .glass-effect {
+            margin: 0;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-height: 800px) {
+            .card-modern {
+                padding: 12px;
+            }
+            
+            .excel-cell {
+                height: 36px;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .header-cell {
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+        }
+        
+        /* Modern button styles */
+        .btn-modern {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        /* Modern input styles */
+        .input-modern {
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+        
+        .input-modern:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: #4b5563;
+        }
+        
+        .input-modern::placeholder {
+            color: #9ca3af;
+        }
+        
+        /* Modern select styles */
+        select {
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        select option {
+            background: #1f2937;
+            color: white;
+        }
+        
+        /* Modern date input styles */
+        input[type="date"] {
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Modern card styles */
+        .card-modern {
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .card-modern:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Modern modal styles */
+        .modal-content {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Modern delete button */
+        .delete-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+        }
+        
+        .delete-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #374151;
             border-radius: 4px;
         }
-        .dropdown:hover .dropdown-content {
-            display: block;
+        
+        ::-webkit-scrollbar-thumb {
+            background: #6b7280;
+            border-radius: 4px;
         }
-        .dropdown-option {
-            padding: 8px 12px;
-            cursor: pointer;
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
         }
-        .dropdown-option:hover {
-            background-color: #f1f5f9;
+        
+        /* Additional modern enhancements */
+        .glass-effect {
+            background: #1f2937;
+            border: 1px solid #374151;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Smooth transitions for all interactive elements */
+        button, input, select, .excel-cell {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Enhanced focus states */
+        .excel-cell:focus-within {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+        
+        /* Modern table row hover effects */
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #374151;
+            transform: translateX(2px);
+        }
+        
+        /* Enhanced button hover effects */
+        .btn-modern:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+        
+        /* Modern card hover effects */
+        .card-modern:hover {
+            transform: translateY(-4px) scale(1.02);
         }
     </style>
 </head>
 <body class="bg-gray-900 min-h-screen">
      <!-- Guest Add Modal -->
-     <div id="guestModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-         <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 opacity-0 modal-content">
-             <div class="flex justify-between items-center border-b p-4">
-                 <h3 class="text-lg font-semibold">Add New Guest</h3>
-                 <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-                     <i class="fas fa-times"></i>
+     <div id="guestModal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center hidden z-50">
+         <div class="w-full max-w-2xl transform transition-all duration-300 scale-95 opacity-0 modal-content">
+             <div class="flex justify-between items-center border-b border-white/20 p-6">
+                 <h3 class="text-xl font-semibold text-white">Add New Guest</h3>
+                 <button id="closeModal" class="text-white/70 hover:text-white transition-colors">
+                     <i class="fas fa-times text-lg"></i>
                  </button>
              </div>
-             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div class="space-y-4">
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Guest Name</label>
-                         <input type="text" id="guestName" class="w-full border rounded px-3 py-2 bg-gray-700 text-white border-gray-600">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Guest Name</label>
+                         <input type="text" id="guestName" class="input-modern w-full">
                      </div>
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Room Assigned</label>
-                         <input type="text" id="roomAssigned" class="w-full border rounded px-3 py-2 bg-gray-700 text-white border-gray-600">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Room Assigned</label>
+                         <input type="text" id="roomAssigned" class="input-modern w-full">
                      </div>
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Reservation Type</label>
-                         <select id="reservationType" class="w-full border rounded px-3 py-2">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Reservation Type</label>
+                         <select id="reservationType" class="w-full">
                              <option value="Reserved">Reserved</option>
                              <option value="Walk-in" selected>Walk-in</option>
                          </select>
                      </div>
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Nationality</label>
-                         <input type="text" id="nationality" class="w-full border rounded px-3 py-2">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Nationality</label>
+                         <input type="text" id="nationality" class="input-modern w-full">
                      </div>
                  </div>
                  <div class="space-y-4">
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
-                         <input type="text" id="mobileNumber" class="w-full border rounded px-3 py-2">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Mobile Number</label>
+                         <input type="text" id="mobileNumber" class="input-modern w-full">
                      </div>
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Arrival Date</label>
-                         <input type="date" id="arrivalDate" class="w-full border rounded px-3 py-2">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Arrival Date</label>
+                         <input type="date" id="arrivalDate" class="w-full">
                      </div>
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
-                         <input type="date" id="departureDate" class="w-full border rounded px-3 py-2">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Departure Date</label>
+                         <input type="date" id="departureDate" class="w-full">
                      </div>
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Payment Mode</label>
-                         <select id="paymentMode" class="w-full border rounded px-3 py-2">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Payment Mode</label>
+                         <select id="paymentMode" class="w-full">
                              <option value="Cash">Cash</option>
                              <option value="Credit Card">Credit Card</option>
                              <option value="Bank Transfer">Bank Transfer</option>
@@ -157,81 +439,91 @@
                          </select>
                      </div>
                      <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Receipt Number</label>
-                         <input type="text" id="receiptNumber" class="w-full border rounded px-3 py-2">
+                         <label class="block text-sm font-medium text-white/80 mb-2">Receipt Number</label>
+                         <input type="text" id="receiptNumber" class="input-modern w-full">
                      </div>
                  </div>
              </div>
-             <div class="border-t p-4 flex justify-end space-x-3">
-                 <button id="cancelAdd" class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 hover-scale click-effect transition-all">Cancel</button>
-                 <button id="saveGuest" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover-scale click-effect transition-all">Save Guest</button>
+             <div class="border-t border-white/20 p-6 flex justify-end space-x-4">
+                 <button id="cancelAdd" class="btn-modern btn-primary">Cancel</button>
+                 <button id="saveGuest" class="btn-modern btn-success">Save Guest</button>
              </div>
          </div>
      </div>
 
-          <div class="w-full h-screen bg-gray-800 flex flex-col overflow-hidden">
-         <div class="bg-gradient-to-r from-blue-700 to-blue-900 p-6 text-white text-center">
-             <h1 class="text-3xl font-bold mb-2 animate-fade-in"><i class="fas fa-hotel mr-2"></i>Hotel Guest Booking System</h1>
-             <p class="text-lg opacity-90 animate-fade-in-delay">Professional Guest Registration Management</p>
+     <div class="w-full h-screen bg-gray-900 flex flex-col overflow-hidden">
+         <div class="bg-gray-800 p-4 text-white text-center border-b border-gray-700">
+             <h1 class="text-3xl font-bold mb-2 animate-fade-in bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                 <i class="fas fa-hotel mr-2 text-2xl"></i>Hotel Guest Booking System
+             </h1>
+             <p class="text-lg text-gray-300 animate-fade-in-delay font-light">Professional Guest Registration Management</p>
          </div>
          
          <!-- Analytics Cards -->
-         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-gray-700">
-             <div class="bg-blue-600 rounded-lg p-4 text-white text-center">
-                 <div class="text-2xl font-bold" id="totalGuestsCard">0</div>
-                 <div class="text-sm">Total Guests</div>
+         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+             <div class="card-modern text-center group">
+                 <div class="text-3xl font-bold text-blue-400 mb-2 group-hover:text-blue-300 transition-colors" id="totalGuestsCard">0</div>
+                 <div class="text-sm text-white/70 uppercase tracking-wider font-medium">Total Guests</div>
+                 <div class="w-12 h-1 bg-gradient-to-r from-blue-400 to-blue-600 mx-auto mt-3 rounded-full"></div>
              </div>
-             <div class="bg-red-600 rounded-lg p-4 text-white text-center">
-                 <div class="text-2xl font-bold" id="occupiedRoomsCard">0</div>
-                 <div class="text-sm">Occupied Rooms</div>
+             <div class="card-modern text-center group">
+                 <div class="text-3xl font-bold text-red-400 mb-2 group-hover:text-red-300 transition-colors" id="occupiedRoomsCard">0</div>
+                 <div class="text-sm text-white/70 uppercase tracking-wider font-medium">Occupied Rooms</div>
+                 <div class="w-12 h-1 bg-gradient-to-r from-red-400 to-red-600 mx-auto mt-3 rounded-full"></div>
              </div>
-             <div class="bg-green-600 rounded-lg p-4 text-white text-center">
-                 <div class="text-2xl font-bold" id="cleanRoomsCard">0</div>
-                 <div class="text-sm">Clean Rooms</div>
+             <div class="card-modern text-center group">
+                 <div class="text-3xl font-bold text-green-400 mb-2 group-hover:text-green-300 transition-colors" id="cleanRoomsCard">0</div>
+                 <div class="text-sm text-white/70 uppercase tracking-wider font-medium">Clean Rooms</div>
+                 <div class="w-12 h-1 bg-gradient-to-r from-green-400 to-green-600 mx-auto mt-3 rounded-full"></div>
              </div>
-             <div class="bg-purple-600 rounded-lg p-4 text-white text-center">
-                 <div class="text-2xl font-bold" id="totalRevenueCard">KSh 0</div>
-                 <div class="text-sm">Total Revenue</div>
+             <div class="card-modern text-center group">
+                 <div class="text-3xl font-bold text-purple-400 mb-2 group-hover:text-purple-300 transition-colors" id="totalRevenueCard">KSh 0</div>
+                 <div class="text-sm text-white/70 uppercase tracking-wider font-medium">Total Revenue</div>
+                 <div class="w-12 h-1 bg-gradient-to-r from-purple-400 to-purple-600 mx-auto mt-3 rounded-full"></div>
              </div>
          </div>
          
-         <div class="p-4 border-b flex justify-between items-center bg-gray-700">
-             <div class="flex space-x-2">
-                 <button id="addGuest" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center hover-scale click-effect transition-all">
+         <div class="bg-gray-800 p-4 border-b border-gray-700 flex flex-col lg:flex-row justify-between items-center gap-3">
+             <div class="flex flex-wrap gap-3">
+                 <button id="addGuest" class="btn-modern btn-success flex items-center">
                      <i class="fas fa-user-plus mr-2"></i> Add Guest
                  </button>
-                 <button id="printReport" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center hover-scale click-effect transition-all">
+                 <button id="printReport" class="btn-modern btn-primary flex items-center">
                      <i class="fas fa-print mr-2"></i> Print Report
                  </button>
              </div>
-             <div class="flex items-center">
-                 <input type="text" id="searchInput" placeholder="Search guests..." class="border rounded-l px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white border-gray-600">
-                 <button id="searchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
+             <div class="flex items-center gap-2">
+                 <div class="relative">
+                     <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                     <input type="text" id="searchInput" placeholder="Search guests..." class="input-modern pl-12 w-80">
+                 </div>
+                 <button id="searchBtn" class="btn-modern btn-primary">
                      <i class="fas fa-search"></i>
                  </button>
              </div>
          </div>
          
-         <div class="overflow-x-auto flex-1 bg-gray-800">
-             <table class="w-full">
-                 <thead>
-                     <tr>
-                         <th class="header-cell">No.</th>
-                         <th class="header-cell">Guest Name</th>
-                         <th class="header-cell">Room Assigned</th>
-                         <th class="header-cell">Reservation Type</th>
-                         <th class="header-cell">Nationality</th>
-                         <th class="header-cell">Mobile Number</th>
-                         <th class="header-cell">Arrival Date</th>
-                         <th class="header-cell">Departure Date</th>
-                         <th class="header-cell">Nights</th>
-                         <th class="header-cell">Payment Mode</th>
-                         <th class="header-cell">Receipt No.</th>
-                         <th class="header-cell">Room Status</th>
-                         <th class="header-cell">Actions</th>
-                     </tr>
-                 </thead>
-                 <tbody id="guestTableBody">
+         <div class="overflow-x-auto flex-1 p-4 bg-gray-900">
+             <div class="bg-gray-800 rounded-lg h-full p-4">
+                 <table class="w-full">
+                     <thead>
+                         <tr>
+                             <th class="header-cell">No.</th>
+                             <th class="header-cell">Guest Name</th>
+                             <th class="header-cell">Room Assigned</th>
+                             <th class="header-cell">Reservation Type</th>
+                             <th class="header-cell">Nationality</th>
+                             <th class="header-cell">Mobile Number</th>
+                             <th class="header-cell">Arrival Date</th>
+                             <th class="header-cell">Departure Date</th>
+                             <th class="header-cell">Nights</th>
+                             <th class="header-cell">Payment Mode</th>
+                             <th class="header-cell">Receipt No.</th>
+                             <th class="header-cell">Room Status</th>
+                             <th class="header-cell">Actions</th>
+                         </tr>
+                     </thead>
+                     <tbody id="guestTableBody">
                      <!-- Sample data row -->
                      <tr>
                          <td class="excel-cell">1</td>
@@ -263,7 +555,7 @@
                          <td class="excel-cell" contenteditable="true">MP-00123</td>
                          <td class="excel-cell status-occupied">Occupied</td>
                          <td class="excel-cell">
-                             <button class="text-red-500 hover:text-red-700 delete-row">
+                             <button class="delete-btn delete-row">
                                  <i class="fas fa-trash-alt"></i>
                              </button>
                          </td>
@@ -525,16 +817,16 @@
              </table>
          </div>
         
-                 <div class="p-4 bg-gray-700 flex justify-between items-center mt-auto">
-             <div class="text-sm text-gray-300">
-                 <span id="totalGuests">8</span> guest(s) registered
+                 <div class="bg-gray-800 p-4 mt-auto border-t border-gray-700 flex justify-between items-center">
+             <div class="text-sm text-gray-300 font-medium">
+                 <span id="totalGuests" class="text-white font-semibold">8</span> guest(s) registered
              </div>
-             <div class="flex space-x-2">
-                 <button class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
+             <div class="flex items-center gap-2">
+                 <button class="btn-modern btn-primary px-4 py-2">
                      <i class="fas fa-chevron-left"></i>
                  </button>
-                 <span class="px-3 py-1">1</span>
-                 <button class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">
+                 <span class="px-4 py-2 text-white font-medium">1</span>
+                 <button class="btn-modern btn-primary px-4 py-2">
                      <i class="fas fa-chevron-right"></i>
                  </button>
              </div>
@@ -622,7 +914,7 @@
                     <td class="excel-cell" contenteditable="true">${document.getElementById('receiptNumber').value}</td>
                     <td class="excel-cell status-clean">Clean</td>
                     <td class="excel-cell">
-                        <button class="text-red-500 hover:text-red-700 delete-row">
+                        <button class="delete-btn delete-row">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
